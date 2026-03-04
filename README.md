@@ -17,7 +17,6 @@ mvn spring-boot:run
 
 The API will be available at: http://localhost:8080/api
 access swagger interface on http://localhost:8080/swagger-ui/index.html
-The H2 Console (Database) is available at: http://localhost:8080/h2-console
 JDBC URL: jdbc:h2:mem:dronedb
 User: sa | Password: (blank)
 

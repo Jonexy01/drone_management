@@ -2,6 +2,7 @@ package com.example.blusalt.exceptions;
 
 import com.example.blusalt.models.dtos.ApiResponse;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -87,6 +90,38 @@ public class GlobalApiExceptionHandler {
         ApiResponse<Object> response = new ApiResponse<Object>(
                 "failed",
                 ex.getMessage(),
+                null,
+                null
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public Object handleNoHandlerFound(NoHandlerFoundException ex, HttpServletRequest request) {
+        if (request.getRequestURI().startsWith("/h2-console")) {
+            return "forward:" + request.getRequestURI();
+        }
+
+        ApiResponse<Object> response = new ApiResponse<Object>(
+                "failed",
+                "Endpoint not found",
+                null,
+                null
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public Object resourceNoHandlerFound(NoResourceFoundException ex, HttpServletRequest request) {
+        if (request.getRequestURI().startsWith("/h2-console")) {
+            return "forward:" + request.getRequestURI();
+        }
+
+        ApiResponse<Object> response = new ApiResponse<Object>(
+                "failed",
+                "Resource not found",
                 null,
                 null
         );
